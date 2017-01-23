@@ -82,7 +82,7 @@ class LearningAgent(Agent):
         ###########
         # Calculate the maximum Q-value of all actions for a given state
 
-        maxQ = None
+        maxQ = max(self.Q[state].values())
 
         return maxQ 
 
@@ -124,7 +124,7 @@ class LearningAgent(Agent):
 
         # When learning, choose a random action with 'epsilon' probability
         else:
-            if numpy.random.binomial(1, self.epsilon) == 1:
+            if numpy.random.binomial(1, max(0,self.epsilon)) == 1:
                 action = random.choice(self.valid_actions)
             
         #   Otherwise, choose an action with the highest Q-value for the current state
@@ -146,8 +146,10 @@ class LearningAgent(Agent):
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         if self.learning:
             new_state = self.build_state()          # Get current state
+            if new_state == state:
+                print "new_state == state"
             self.createQ(new_state)                 # Create 'state' in Q-table
-            self.Q[state][action] = self.Q[state][action] + self.alpha * (reward + max(self.Q[new_state].values()) - self.Q[state][action]) 
+            self.Q[state][action] = self.Q[state][action] + self.alpha * (reward + self.get_maxQ(new_state) - self.Q[state][action]) 
 
         return
 
