@@ -63,15 +63,37 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set 'state' as a tuple of relevant data for the agent        
-        list_state = inputs.items()
-        list_state.append(('waypoint',waypoint))
+        #list_state = inputs.items()
+        #list_state.append(('waypoint',waypoint))
         #list_state.append(('deadline',deadline))
+        #state = tuple(list_state)
+
+        list_state = []
+        
+        # include light in state
+        list_state.append(('light', inputs['light']))
+        
+        # include oncoming in state
+        list_state.append(('oncoming', inputs['oncoming']))
+        
+        # inspect whether another driving left to the agent is driving forward
+        if inputs['right'] == 'forward':
+            list_state.append(('right','true'))
+        else: 
+            list_state.append(('right','false'))
+        
+        # inspect whether another driving left to the agent is driving forward
+        if inputs['left'] == 'forward':
+            list_state.append(('left','true'))
+        else: 
+            list_state.append(('left','false'))
+            
+        # include waypoint
+        list_state.append(('waypoint',waypoint))
+
         state = tuple(list_state)
-
-        #state = (waypoint,inputs.items(),deadline)
-
-        return state
-
+        
+        return state 
 
     def get_maxQ(self, state):
         """ The get_max_Q function is called when the agent is asked to find the
@@ -146,8 +168,6 @@ class LearningAgent(Agent):
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         if self.learning:
             new_state = self.build_state()          # Get current state
-            if new_state == state:
-                print "new_state == state"
             self.createQ(new_state)                 # Create 'state' in Q-table
             self.Q[state][action] = self.Q[state][action] + self.alpha * (reward + self.get_maxQ(new_state) - self.Q[state][action]) 
 
@@ -175,7 +195,8 @@ def run():
     #   verbose     - set to True to display additional output from the simulation
     #   num_dummies - discrete number of dummy agents in the environment, default is 100
     #   grid_size   - discrete number of intersections (columns, rows), default is (8, 6)
-    env = Environment(verbose=True)
+    #env = Environment(verbose=True)
+    env = Environment()
     
     ##############
     # Create the driving agent
