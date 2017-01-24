@@ -93,6 +93,12 @@ class LearningAgent(Agent):
         # include waypoint
         list_state.append(('waypoint',waypoint))
 
+        # include deadline 
+        if deadline <= 7: 
+            list_state.append(('deadline','true'))
+        else:
+            list_state.append(('deadline','false'))
+
         state = tuple(list_state)
         
         return state 
@@ -231,7 +237,7 @@ def run():
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
     #sim.run()
-    sim.run(tolerance=0.000007, n_test=10)
+    sim.run(tolerance=0.000003, n_test=10)
 
 
 if __name__ == '__main__':
