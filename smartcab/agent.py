@@ -9,7 +9,7 @@ class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """ 
 
-    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.5):
+    def __init__(self, env, learning=False, epsilon=1.0, alpha=0.5):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
@@ -24,7 +24,7 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
-        self.trial = 1.0
+        self.trial = 0
 
 
     def reset(self, destination=None, testing=False):
@@ -39,10 +39,21 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Update epsilon using a decay function of your choice
-        self.epsilon = 1.0 / (self.trial*self.trial)
-        
+
         # Update additional class parameters as needed
         self.trial = self.trial + 1
+
+        # Option 1:
+        #self.epsilon = 1.0 / (self.trial*self.trial)
+
+        # Option 2:
+        #self.epsilon = 0.9 ** self.trial
+
+        # Option 3:
+        #self.epsilon = math.exp(- 0.05 * self.trial)
+        
+        # Option 4:
+        self.epsilon = math.cos( 1.0/300 * self.trial)
 
         # If 'testing' is True, set epsilon and alpha to 0
         if testing:
@@ -65,11 +76,8 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set 'state' as a tuple of relevant data for the agent        
-        #list_state = inputs.items()
-        #list_state.append(('waypoint',waypoint))
-        #list_state.append(('deadline',deadline))
-        #state = tuple(list_state)
 
+        # initiate a list
         list_state = []
         
         # include light in state
@@ -94,11 +102,14 @@ class LearningAgent(Agent):
         list_state.append(('waypoint',waypoint))
 
         # include deadline 
-        if deadline <= 7: 
-            list_state.append(('deadline','true'))
+        if deadline <= 5: 
+            list_state.append(('deadline','short'))
+        elif deadline <= 10:
+            list_state.append(('deadline','median'))
         else:
-            list_state.append(('deadline','false'))
+            list_state.append(('deadline','long'))
 
+        # change list to a tuple
         state = tuple(list_state)
         
         return state 
@@ -128,8 +139,6 @@ class LearningAgent(Agent):
         #   Then, for each action available, set the initial Q-value to 0.0
         if self.learning:
             if state not in self.Q.keys(): 
-                print 'type(state)', type(state)
-                print 'state', state
                 self.Q[state] = dict()
                 for i in self.valid_actions: 
                     self.Q[state][i] = 0.0
@@ -212,7 +221,7 @@ def run():
     #   learning   - set to True to force the driving agent to use Q-learning
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
-    agent = env.create_agent(LearningAgent)
+    agent = env.create_agent(LearningAgent, learning=True, alpha=0.005)
     
     ##############
     # Follow the driving agent
@@ -237,7 +246,7 @@ def run():
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
     #sim.run()
-    sim.run(tolerance=0.000003, n_test=10)
+    sim.run(tolerance=0.05, n_test=10)
 
 
 if __name__ == '__main__':
