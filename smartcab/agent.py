@@ -53,7 +53,7 @@ class LearningAgent(Agent):
         #self.epsilon = math.exp(- 0.05 * self.trial)
         
         # Option 4:
-        self.epsilon = math.cos( 1.0/300 * self.trial)
+        self.epsilon = math.cos( 1.0/500 * self.trial)
 
         # If 'testing' is True, set epsilon and alpha to 0
         if testing:
@@ -184,9 +184,7 @@ class LearningAgent(Agent):
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         if self.learning:
-            new_state = self.build_state()          # Get current state
-            self.createQ(new_state)                 # Create 'state' in Q-table
-            self.Q[state][action] = self.Q[state][action] + self.alpha * (reward + self.get_maxQ(new_state) - self.Q[state][action]) 
+            self.Q[state][action] = self.Q[state][action] + self.alpha * (reward - self.Q[state][action]) 
 
         return
 
@@ -246,7 +244,7 @@ def run():
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
     #sim.run()
-    sim.run(tolerance=0.05, n_test=10)
+    sim.run(tolerance=0.01, n_test=30)
 
 
 if __name__ == '__main__':
