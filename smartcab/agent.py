@@ -88,26 +88,24 @@ class LearningAgent(Agent):
         
         # inspect whether another driving left to the agent is driving forward
         if inputs['right'] == 'forward':
-            list_state.append(('right','true'))
+            list_state.append(('is_right_forward','true'))
         else: 
-            list_state.append(('right','false'))
+            list_state.append(('is_right_forward','false'))
         
         # inspect whether another driving left to the agent is driving forward
         if inputs['left'] == 'forward':
-            list_state.append(('left','true'))
+            list_state.append(('is_left_forward','true'))
         else: 
-            list_state.append(('left','false'))
+            list_state.append(('is_left_forward','false'))
             
         # include waypoint
         list_state.append(('waypoint',waypoint))
 
         # include deadline 
         if deadline <= 5: 
-            list_state.append(('deadline','short'))
-        #elif deadline <= 10:
-        #    list_state.append(('deadline','median'))
+            list_state.append(('is_deadline_close','true'))
         else:
-            list_state.append(('deadline','long'))
+            list_state.append(('is_deadline_close','false'))
 
         # change list to a tuple
         state = tuple(list_state)
@@ -251,7 +249,7 @@ def run():
     #sim.run()
 
     # Option 3:
-    sim.run(tolerance=0.1, n_test=30)
+    sim.run(tolerance=0.05, n_test=30)
 
     # Option 4:
     #sim.run(tolerance=0.01, n_test=30)
