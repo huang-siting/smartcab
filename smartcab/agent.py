@@ -50,10 +50,10 @@ class LearningAgent(Agent):
         #self.epsilon = 0.9 ** self.trial
 
         # Option 3:
-        #self.epsilon = math.exp(- 0.05 * self.trial)
+        self.epsilon = math.exp(- 0.003 * self.trial)
         
         # Option 4:
-        self.epsilon = math.cos( 1.0/500 * self.trial)
+        #self.epsilon = math.cos( 1.0/550 * self.trial)
 
         # If 'testing' is True, set epsilon and alpha to 0
         if testing:
@@ -104,8 +104,8 @@ class LearningAgent(Agent):
         # include deadline 
         if deadline <= 5: 
             list_state.append(('deadline','short'))
-        elif deadline <= 10:
-            list_state.append(('deadline','median'))
+        #elif deadline <= 10:
+        #    list_state.append(('deadline','median'))
         else:
             list_state.append(('deadline','long'))
 
@@ -219,7 +219,12 @@ def run():
     #   learning   - set to True to force the driving agent to use Q-learning
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
-    agent = env.create_agent(LearningAgent, learning=True, alpha=0.005)
+
+    # Option 3:
+    agent = env.create_agent(LearningAgent, learning=True, alpha=0.1)
+
+    # Option 4:
+    #agent = env.create_agent(LearningAgent, learning=True, alpha=0.005)
     
     ##############
     # Follow the driving agent
@@ -244,7 +249,12 @@ def run():
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
     #sim.run()
-    sim.run(tolerance=0.01, n_test=30)
+
+    # Option 3:
+    sim.run(tolerance=0.1, n_test=30)
+
+    # Option 4:
+    #sim.run(tolerance=0.01, n_test=30)
 
 
 if __name__ == '__main__':
