@@ -53,10 +53,10 @@ class LearningAgent(Agent):
         #self.epsilon = 0.9 ** self.trial
 
         # Option 3:
-        self.epsilon = math.exp(- 0.003 * self.trial)
+        #self.epsilon = math.exp(- 0.003 * self.trial)
         
         # Option 4:
-        #self.epsilon = math.cos( 1.0/550 * self.trial)
+        self.epsilon = math.cos( 1.0/550 * self.trial)
 
         # If 'testing' is True, set epsilon and alpha to 0
         if testing:
@@ -224,10 +224,10 @@ def run():
     #agent = env.create_agent(LearningAgent, learning=True)
 
     # Option 3:
-    agent = env.create_agent(LearningAgent, learning=True, alpha=0.1)
+    #agent = env.create_agent(LearningAgent, learning=True, alpha=0.1)
 
     # Option 4:
-    #agent = env.create_agent(LearningAgent, learning=True, alpha=0.005)
+    agent = env.create_agent(LearningAgent, learning=True, alpha=0.05)
     
     ##############
     # Follow the driving agent
@@ -261,10 +261,13 @@ def run():
     #sim.run(n_test=10)
 
     # Option 3:
-    sim.run(tolerance=0.05, n_test=30)
+    #Q = sim.run(tolerance=0.05, n_test=30)
 
     # Option 4:
-    #sim.run(tolerance=0.01, n_test=30)
+    Q = sim.run(tolerance=0.01, n_test=30)
+
+    # return Q table for verifying policy
+    return Q
 
 
 if __name__ == '__main__':
