@@ -44,7 +44,7 @@ class LearningAgent(Agent):
         self.trial = self.trial + 1
 
         # Question 6:
-        #self.epsilon -= 0.05
+        self.epsilon -= 0.05
 
         # Option 1:
         #self.epsilon = 1.0 / (self.trial*self.trial)
@@ -56,7 +56,7 @@ class LearningAgent(Agent):
         #self.epsilon = math.exp(- 0.003 * self.trial)
         
         # Option 4:
-        self.epsilon = math.cos( 1.0/550 * self.trial)
+        #self.epsilon = math.cos( 1.0/550 * self.trial)
 
         # If 'testing' is True, set epsilon and alpha to 0
         if testing:
@@ -83,33 +83,18 @@ class LearningAgent(Agent):
         # initiate a list
         list_state = []
         
+        # include waypoint
+        list_state.append(('waypoint',waypoint))
+
         # include light in state
         list_state.append(('light', inputs['light']))
+
+        # include left in state
+        list_state.append(('left', inputs['left']))
         
         # include oncoming in state
         list_state.append(('oncoming', inputs['oncoming']))
         
-        # inspect whether another driving left to the agent is driving forward
-        if inputs['right'] == 'forward':
-            list_state.append(('is_right_forward','true'))
-        else: 
-            list_state.append(('is_right_forward','false'))
-        
-        # inspect whether another driving left to the agent is driving forward
-        if inputs['left'] == 'forward':
-            list_state.append(('is_left_forward','true'))
-        else: 
-            list_state.append(('is_left_forward','false'))
-            
-        # include waypoint
-        list_state.append(('waypoint',waypoint))
-
-        # include deadline 
-        if deadline <= 5: 
-            list_state.append(('is_deadline_close','true'))
-        else:
-            list_state.append(('is_deadline_close','false'))
-
         # change list to a tuple
         state = tuple(list_state)
         
@@ -221,13 +206,13 @@ def run():
     #    * alpha   - continuous value for the learning rate, default is 0.5
 
     # Question 6:
-    #agent = env.create_agent(LearningAgent, learning=True)
+    agent = env.create_agent(LearningAgent, learning=True)
 
     # Option 3:
     #agent = env.create_agent(LearningAgent, learning=True, alpha=0.1)
 
     # Option 4:
-    agent = env.create_agent(LearningAgent, learning=True, alpha=0.05)
+    #agent = env.create_agent(LearningAgent, learning=True, alpha=0.05)
     
     ##############
     # Follow the driving agent
@@ -245,10 +230,10 @@ def run():
     #   optimized    - set to True to change the default log file name
 
     #sim = Simulator(env)
-    sim = Simulator(env, update_delay=0.01, display = False, log_metrics=True, optimized=True)
+    #sim = Simulator(env, update_delay=0.01, display = False, log_metrics=True, optimized=True)
 
     # question 6:
-    #sim = simulator(env, update_delay=0.01, display = false, log_metrics=true)
+    sim = Simulator(env, update_delay=0.01, display = False, log_metrics=True)
     
     ##############
     # Run the simulator
@@ -258,13 +243,13 @@ def run():
     #sim.run()
 
     # Question 6:
-    #sim.run(n_test=10)
+    sim.run(n_test=10)
 
     # Option 3:
     #Q = sim.run(tolerance=0.05, n_test=30)
 
     # Option 4:
-    Q = sim.run(tolerance=0.01, n_test=30)
+    #Q = sim.run(tolerance=0.01, n_test=10)
 
     # return Q table for verifying policy
     return Q
