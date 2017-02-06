@@ -38,12 +38,12 @@ class LearningAgent(Agent):
         ########### 
         ## TO DO ##
         ###########
-        # Update epsilon using a decay function of your choice
-
         # Update additional class parameters as needed
         self.trial = self.trial + 1
 
-        # Question 6:
+        # Update epsilon using a decay function of your choice
+
+        # default Q-Learning: linear 
         self.epsilon -= 0.05
 
         # Option 1:
@@ -154,7 +154,12 @@ class LearningAgent(Agent):
             
         #   Otherwise, choose an action with the highest Q-value for the current state
             else:
-                action = max(self.Q[state], key=self.Q[state].get)
+                maxQ = self.get_maxQ(state)
+                maxQ_actions = []
+                for i_action in self.Q[state]:
+                    if self.Q[state][i_action] == maxQ:  
+                        maxQ_actions.append(i_action) 
+                action = random.choice(maxQ_actions)
  
         return action
 
@@ -205,7 +210,7 @@ def run():
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
 
-    # Question 6:
+    # default Q-Learning:
     agent = env.create_agent(LearningAgent, learning=True)
 
     # Option 3:
@@ -232,7 +237,7 @@ def run():
     #sim = Simulator(env)
     #sim = Simulator(env, update_delay=0.01, display = False, log_metrics=True, optimized=True)
 
-    # question 6:
+    # default Q-Learning :
     sim = Simulator(env, update_delay=0.01, display = False, log_metrics=True)
     
     ##############
@@ -242,14 +247,14 @@ def run():
     #   n_test     - discrete number of testing trials to perform, default is 0
     #sim.run()
 
-    # Question 6:
+    # default Q-learning:
     sim.run(n_test=10)
 
     # Option 3:
     #Q = sim.run(tolerance=0.05, n_test=30)
 
     # Option 4:
-    #Q = sim.run(tolerance=0.01, n_test=10)
+    #Q = sim.run(tolerance=0.1, n_test=30)
 
     # return Q table for verifying policy
     return Q
