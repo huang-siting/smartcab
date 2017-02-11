@@ -241,9 +241,6 @@ class Simulator(object):
                     f.write("\n")  
                 self.table_file.close()
 
-                # return Q table
-                return a.Q
-
             self.log_file.close()
 
         print "\nSimulation ended. . . "
