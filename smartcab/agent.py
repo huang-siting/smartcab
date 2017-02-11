@@ -44,19 +44,13 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
 
         # default Q-Learning: linear 
-        self.epsilon -= 0.05
+        #self.epsilon -= 0.05
 
-        # Option 1:
-        #self.epsilon = 1.0 / (self.trial*self.trial)
-
-        # Option 2:
-        #self.epsilon = 0.9 ** self.trial
-
-        # Option 3:
-        #self.epsilon = math.exp(- 0.003 * self.trial)
-        
-        # Option 4:
-        #self.epsilon = math.cos( 1.0/550 * self.trial)
+        # optimized Q-Learning
+        #self.epsilon = 1.0 / (self.trial*self.trial) # Option 1
+        #self.epsilon = 0.9 ** self.trial # Option 2
+        #self.epsilon = math.exp(- 0.003 * self.trial) # Option 3
+        self.epsilon = math.cos( 1.0/500 * self.trial) # Option 4
 
         # If 'testing' is True, set epsilon and alpha to 0
         if testing:
@@ -153,6 +147,7 @@ class LearningAgent(Agent):
                 action = random.choice(self.valid_actions)
             
         #   Otherwise, choose an action with the highest Q-value for the current state
+        #   randomly choose from multiple actions if they all have the highest Q-value
             else:
                 maxQ = self.get_maxQ(state)
                 maxQ_actions = []
@@ -191,7 +186,7 @@ class LearningAgent(Agent):
         return
         
 
-def run():
+def run(alpha=0.05, tolerance=0.05):
     """ Driving function for running the simulation. 
         Press ESC to close the simulation, or [SPACE] to pause the simulation. """
 
@@ -211,19 +206,16 @@ def run():
     #    * alpha   - continuous value for the learning rate, default is 0.5
 
     # default Q-Learning:
-    agent = env.create_agent(LearningAgent, learning=True)
+    #agent = env.create_agent(LearningAgent, learning=True)
 
-    # Option 3:
-    #agent = env.create_agent(LearningAgent, learning=True, alpha=0.1)
-
-    # Option 4:
-    #agent = env.create_agent(LearningAgent, learning=True, alpha=0.05)
+    # optimized Q-Learning:
+    #agent = env.create_agent(LearningAgent, learning=True, alpha=0.1) # Option 3
+    agent = env.create_agent(LearningAgent, learning=True, alpha=alpha) # Option 4
     
     ##############
     # Follow the driving agent
     # Flags:
     #   enforce_deadline - set to True to enforce a deadline metric
-    #env.set_primary_agent(agent)
     env.set_primary_agent(agent, enforce_deadline = True)
 
     ##############
@@ -234,31 +226,26 @@ def run():
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
 
-    #sim = Simulator(env)
-    #sim = Simulator(env, update_delay=0.01, display = False, log_metrics=True, optimized=True)
-
     # default Q-Learning :
-    sim = Simulator(env, update_delay=0.01, display = False, log_metrics=True)
+    #sim = Simulator(env, update_delay=0.01, display = False, log_metrics=True)
+
+    # optimized Q-Learning:
+    sim = Simulator(env, update_delay=0.01, display = False, log_metrics=True, optimized=True)
     
     ##############
     # Run the simulator
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    #sim.run()
 
     # default Q-learning:
-    sim.run(n_test=10)
+    #sim.run(n_test=10)
 
-    # Option 3:
-    #Q = sim.run(tolerance=0.05, n_test=30)
+    # optimized Q-learning:
+    sim.run(tolerance=tolerance, n_test=30) # Option 4
 
-    # Option 4:
-    #Q = sim.run(tolerance=0.1, n_test=30)
-
-    # return Q table for verifying policy
-    return Q
-
+    # return simulation results
+    return sim
 
 if __name__ == '__main__':
     run()
